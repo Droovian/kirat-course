@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { generateId, validateInput } = require('./userid');
+const { generateId, validateInput, generateCourseId } = require('./userid');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -12,15 +12,27 @@ const mongoPort = 27017;
 const app = express();
 
 const mongoSchema = mongoose.Schema({
+
     id: String,
     name: String,
     email: String,
     password: String
+
+});
+
+const courseSchema = mongoose.Schema({
+
+    CourseId : String,
+    courseName : String,
+    description: String,
+    price: Number
+
 });
 
 mongoose.connect(`mongodb://localhost:${mongoPort}/mongousers`).then(()=>{console.log(`connected to mongoose`);})
 
 const User = mongoose.model('users', mongoSchema);
+const Course = mongoose.model('courses', courseSchema);
 
 app.use(express.json());
 
@@ -34,6 +46,28 @@ async function passwordMiddleware(req, res, next){
 
     next();
 }
+
+app.get('/courses/:id', async (req, res) => {
+
+    const courseId = req.params.id;
+
+    try{
+        const course = await Course.findOne({ CourseId : courseId });
+
+        if(!course){
+            return res.status(404).json({
+                msg : 'Course not found'
+            });
+        }
+
+        res.status(200).json(course);
+    }
+    catch(err){
+        res.status(500).json({
+            msg: 'Internal server error'
+        });
+    }
+});
 
 app.post('/signup', passwordMiddleware, async(req, res) => {
 
@@ -107,6 +141,40 @@ app.post('/login', async(req, res) => {
             msg : 'Internal server error'
         });
     }
+});
+
+app.post('/courses', async (req, res) => {
+
+    const courseId = generateCourseId();
+    const { courseName, description, price } = req.body;
+
+    const checkDup = await Course.find({ courseName, courseId });
+
+    if(checkDup.length > 0){
+        return res.status(404).json({
+            msg : 'Course has been created already!'
+        });
+    }
+
+    const newCourse = new Course({
+        CourseId: courseId,
+        courseName : courseName,
+        description : description,
+        price: price
+    });
+
+    try{
+        await newCourse.save();
+        res.json({
+            msg: 'Course created successfully'
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: 'Internal server error'
+        });
+    }
+
 });
 
 app.listen(port, ()=>{

@@ -9,6 +9,17 @@ function generateId() {
     return uniqueId;
 }
 
+function generateCourseId() {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const prefix = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    
+    const randomNumber = Math.floor(100 + Math.random() * 900);
+
+    const courseId = `${prefix}${randomNumber}`;
+
+    return courseId;
+}
+
 function validateInput(users) {
     const schema = zod.object({
         email: zod.string().email(),
@@ -22,5 +33,6 @@ function validateInput(users) {
 
 module.exports = {
     generateId,
-    validateInput
+    validateInput,
+    generateCourseId
 };
