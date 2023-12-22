@@ -1,0 +1,6 @@
+In case of real world its used to do pre checks like authentication e.g checking if someone is logged in and username along
+with the input validation. Basically in case of the hospital example someone should conduct tests beforehand
+
+app.use -> any routes coming after it has been declared over there u dont have to specifically call the middleware as a callback
+in your functions list
+

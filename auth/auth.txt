@@ -1,0 +1,7 @@
+backend will first validate u and check if your details r proper from the database
+will return a token to you to be stored in your local storage , so u send the server your token and returns your response
+
+
+// cryptography
+
+1. json web tokens 
