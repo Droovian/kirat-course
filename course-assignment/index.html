@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        async function doSomething(){
+            const p = document.getElementById('p').value;
+            const r =document.getElementById('r').value;
+            const t = document.getElementById('t').value;
+
+            const response = await fetch("http://localhost:3000/sum?p=" + p + "&r=" + r + "&t=" + t);
+           
+            const sol = await response.json();
+
+            document.getElementById('total').innerHTML = sol.totalPrincipal;
+            document.getElementById('interest').innerHTML = sol.interest;
+        }
+
+
+    </script>
+
+
+    <input id='p' placeholder="Principal" type="text">
+    <br><br>
+    <input id="r" placeholder="Rate" type="text">
+    <br><br>
+    <input id="t" placeholder="time" type="text">
+    <br><br>
+    <button onclick="doSomething()">Find</button>
+    <br><br>
+    <div id="total"></div>
+    <div id="interest"></div>
+    <div id="solution"></div>
+</body>
+</html>
